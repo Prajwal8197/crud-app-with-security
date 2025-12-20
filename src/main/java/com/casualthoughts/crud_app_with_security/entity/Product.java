@@ -18,5 +18,6 @@ public class Product {
     private Long id;
     private String name;
     private String description;
+    private Integer qty;
     private Double price;
 }
