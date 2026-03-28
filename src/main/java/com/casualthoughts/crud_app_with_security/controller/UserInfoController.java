@@ -38,7 +38,7 @@ public class UserInfoController {
     }
 
     @PostMapping("/login")
-    public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+    public String authenticateAndGetToken(@RequestBody @Valid AuthRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
         );
