@@ -3,9 +3,14 @@ package com.casualthoughts.crud_app_with_security.controller;
 
 import com.casualthoughts.crud_app_with_security.constant.Role;
 import com.casualthoughts.crud_app_with_security.dto.AuthRequest;
+import com.casualthoughts.crud_app_with_security.dto.GenericApiResponse;
+import com.casualthoughts.crud_app_with_security.dto.RegisterRequest;
 import com.casualthoughts.crud_app_with_security.entity.UserInfo;
 import com.casualthoughts.crud_app_with_security.repository.UserInfoRepository;
 import com.casualthoughts.crud_app_with_security.service.JwtService;
+import com.casualthoughts.crud_app_with_security.service.UserInfoService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,31 +20,25 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
-public class UserController {
+public class UserInfoController {
 
-    private final UserInfoRepository repository;
-    private final PasswordEncoder passwordEncoder;
+    private final UserInfoService userInfoService;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
-    public UserController(UserInfoRepository repository, PasswordEncoder passwordEncoder,
-                          AuthenticationManager authenticationManager, JwtService jwtService) {
-        this.repository = repository;
-        this.passwordEncoder = passwordEncoder;
+    public UserInfoController(UserInfoService userInfoService, AuthenticationManager authenticationManager, JwtService jwtService) {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
+        this.userInfoService=userInfoService;
     }
 
     @PostMapping("/register")
-    public String addNewUser(@RequestBody UserInfo userInfo) {
-        userInfo.setPassword(passwordEncoder.encode(userInfo.getPassword()));
-        userInfo.setRole(Role.ROLE_USER);
-        repository.save(userInfo);
-        return "User registered Successfully";
+    public ResponseEntity<GenericApiResponse<?>> register(@RequestBody @Valid RegisterRequest request) {
+        return userInfoService.userInfoRegistration(request);
     }
 
     @PostMapping("/login")
-    public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+    public String authenticateAndGetToken(@RequestBody @Valid AuthRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
         );
