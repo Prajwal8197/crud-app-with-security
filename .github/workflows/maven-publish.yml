@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write # Critical for pushing to GitHub Packages
+      packages: write # Critical: Allows pushing the .jar to GitHub Packages
 
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -18,10 +18,11 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-          server-id: github # Matches the <server><id> in settings.xml
+          server-id: github # Matches the <id> in your pom.xml distributionManagement
           settings-path: ${{ github.workspace }}
 
       - name: Publish to GitHub Packages
         run: mvn --batch-mode deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }} # Included in case tests run during deploy
