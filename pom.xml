@@ -8,6 +8,15 @@
 		<version>4.0.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+	
+	<distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/Prajwal8197/crud-app-with-security</url>
+        </repository>
+    </distributionManagement>
+	
 	<groupId>com.casualthoughts</groupId>
 	<artifactId>crud-app-with-security</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
