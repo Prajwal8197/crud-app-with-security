@@ -1,33 +1,27 @@
 name: Maven Package
-
 on:
   release:
     types: [created]
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write
+      packages: write # Critical for pushing to GitHub Packages
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      
       - name: Set up JDK 21
-        uses: actions/setup-java@387ac29b308b003c05baef7110591452499a4ee2
+        uses: actions/setup-java@3a4f611ca74359a53f093051d97f394469d80d2d
         with:
           java-version: '21'
           distribution: 'temurin'
-          server-id: github
+          server-id: github # Matches the <server><id> in settings.xml
           settings-path: ${{ github.workspace }}
-          cache: maven
 
-      - name: Build with Maven
-        run: mvn -B package --file pom.xml
-
-      - name: Publish to GitHub Packages Apache Maven
-        run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
+      - name: Publish to GitHub Packages
+        run: mvn --batch-mode deploy
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
