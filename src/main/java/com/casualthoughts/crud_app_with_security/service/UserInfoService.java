@@ -35,11 +35,12 @@ public class UserInfoService {
         userInfo.setRole(Role.ROLE_USER);
         UserInfo savedUserInfo = repository.save(userInfo);
         GenericApiResponse<?> response = null;
-//        if (savedUserInfo != null) {
-            return response.success("User registered successfully", 201, null);
-//        } else {
-//            response.error("User registration failed", 400);
-//        }
+        if (savedUserInfo != null) {
+             response.success("User registered successfully", 201, null);
+        } else {
+            response.error("User registration failed", 400, null);
+        }
+        return ResponseEntity.ok(response);
     }
 
 }
