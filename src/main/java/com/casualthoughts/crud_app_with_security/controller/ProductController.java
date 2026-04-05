@@ -1,12 +1,17 @@
 package com.casualthoughts.crud_app_with_security.controller;
 
+import com.casualthoughts.crud_app_with_security.dto.GenericApiResponse;
 import com.casualthoughts.crud_app_with_security.entity.Product;
 import com.casualthoughts.crud_app_with_security.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,8 +50,8 @@ public class ProductController {
     })
     @GetMapping("/all")
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN', 'ROLE_MANAGER')")
-    public List<Product> getAllProducts() {
-        return service.getProducts();
+    public ResponseEntity<GenericApiResponse<?>> getAllProducts(@ParameterObject Pageable pageable) {
+        return service.getProductPage(pageable);
     }
 
 
@@ -74,7 +79,7 @@ public class ProductController {
     })
     @PostMapping("/add")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
-    public Product addProduct(@RequestBody Product product) {
-        return service.saveProduct(product);
+    public List<Product> addProduct(@RequestBody List<Product> products) {
+        return service.saveProduct(products);
     }
 }
