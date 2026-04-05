@@ -38,7 +38,7 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
-                .requestMatchers("/auth/h2-console/**");
+                .requestMatchers("/auth/h2-console/**", "/actuator/health");
     }
 
     @Bean
@@ -47,13 +47,12 @@ public class SecurityConfig {
                 .cors(cors->cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/actuator/health").permitAll()
                         .requestMatchers(
+                                "/auth/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "/swagger-ui.html"
-                        ).permitAll()
-                        .requestMatchers("/actuator/health").permitAll()
+                                "/swagger-ui.html").permitAll()
                         .requestMatchers("/auth/h2-console/**").permitAll()
                         .requestMatchers("/products/all").hasAnyRole("USER", "ADMIN", "MANAGER")
                         .requestMatchers("/actuator/**").hasRole("ADMIN")
