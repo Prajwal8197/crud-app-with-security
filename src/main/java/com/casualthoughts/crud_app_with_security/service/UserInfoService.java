@@ -34,13 +34,12 @@ public class UserInfoService {
         userInfo.setPassword(passwordEncoder.encode(request.getPassword()));
         userInfo.setRole(Role.ROLE_USER);
         UserInfo savedUserInfo = repository.save(userInfo);
-        GenericApiResponse<?> response = null;
+        GenericApiResponse<?> response = new GenericApiResponse<>();
         if (savedUserInfo != null) {
-             response.success("User registered successfully", 201, null);
+            return  response.success("User registered successfully", 201, null);
         } else {
-            response.error("User registration failed", 400, null);
+           return response.error("User registration failed", 400, null);
         }
-        return ResponseEntity.ok(response);
     }
 
 }
